@@ -3,6 +3,7 @@ import curses
 import json
 import argparse
 import random
+import time
 parser=argparse.ArgumentParser()
 parser.add_argument("script", type=str, help="execute sequence of commands")
 comms=parser.parse_args()
@@ -34,8 +35,9 @@ def main(stdscr):
 		raise ValueError("Error in script")
 	stdscr.clear()
 	for i in commands:
-		if isinstance(i, int):
-			curses.napms(int(i*1000))
+		if isinstance(i, float):
+			#stdscr.getkey()
+			time.sleep(1)
 		items=""
 		if isinstance(i, list):
 			i=chunks(i, screens["size"]["width"])
@@ -47,5 +49,5 @@ def main(stdscr):
 					stdscr.addstr(k,m, "  ", curses.color_pair(2 if l==0 else 1))
 			open("/tmp/output_list.txt","w").write(items)
 			stdscr.refresh()
-			stdscr.getkey()
+			#stdscr.getkey()
 curses.wrapper(main)

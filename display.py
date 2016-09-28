@@ -15,7 +15,7 @@ def parse_cmd_line():
 
 
 def chunks(l, n):
-    list(zip(*[iter(l)]*n))
+    return list(zip(*[iter(l)]*n))
 
 
 def bitblt(stdscr, screen, width, intrue, outtrue, outfalse):
@@ -23,8 +23,7 @@ def bitblt(stdscr, screen, width, intrue, outtrue, outfalse):
     for j, k in zip(screen, range(len(screen))):
         for l, m in zip(j, range(len(j))):
             m = m*2
-            stdscr.addstr(k, m, "  ", curses.color_pair(outtrue if l == intrue
-                                                        else outfalse))
+            stdscr.addstr(k, m, "  ", curses.color_pair(outtrue if l == intrue else outfalse))
     stdscr.refresh()
 
 
@@ -66,6 +65,6 @@ def main(stdscr):
         if isinstance(i, float):
             time.sleep(i)
         if isinstance(i, list):
-            bitblt(stdscr, i, screens["size"]["width"], 1, 2, 1)
+            bitblt(stdscr, i, screens["size"]["width"], 1, 1, 2)
 if __name__ == "__main__":
     curses.wrapper(main)

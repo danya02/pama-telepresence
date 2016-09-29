@@ -3,6 +3,7 @@ import curses
 import json
 import argparse
 import time
+import threading
 
 
 def parse_cmd_line():
@@ -10,6 +11,7 @@ def parse_cmd_line():
     parser.add_argument("script", type=str,
                         help="execute sequence of commands")
     comms = parser.parse_args()
+    global screens
     screens = json.load(open("screens.json"))
     return comms, screens
 
@@ -27,6 +29,24 @@ def bitblt(stdscr, screen, width, intrue, outtrue, outfalse):
     stdscr.refresh()
 
 
+def switcher():
+    global switching_command
+    global screens
+    while 1:
+        if isinstance(switching_command, list):
+            if isinstance(switching_command[1], list):
+                bitblt(switching_command[0], switching_command[1], screens["size"]["width"], 1, 1, 2)
+            elif switching_command[1] == "d":
+                bitblt(switching_command[0], screens["delay"]["1"], screens["size"]["width"], 1, 1, 2)
+                time.sleep(0.25)
+                bitblt(switching_command[0], screens["delay"]["2"], screens["size"]["width"], 1, 1, 2)
+                time.sleep(0.25)
+                bitblt(switching_command[0], screens["delay"]["3"], screens["size"]["width"], 1, 1, 2)
+                time.sleep(0.5)
+        else:
+            pass
+
+
 def parse(script, dataset):
     commands = []
     result = 0
@@ -40,7 +60,8 @@ def parse(script, dataset):
                 result += 1
             except:
                 try:
-                    commands += [dataset["delay"][i]]
+                    assert(i == "p")
+                    commands += "d"
                     result += 1
                 except:
                     pass
@@ -57,6 +78,11 @@ def init_color():
 
 
 def main(stdscr):
+    global switching_command
+    switching_command = None
+    switch = threading.Thread(target=switcher)
+    switch.setDaemon(True)
+    switch.start()
     init_color()
     stdscr.clear()
     comms, screens = parse_cmd_line()
@@ -64,7 +90,9 @@ def main(stdscr):
     for i in commands:
         if isinstance(i, float):
             time.sleep(i)
-        if isinstance(i, list):
-            bitblt(stdscr, i, screens["size"]["width"], 1, 1, 2)
+        elif isinstance(i, list):
+            switching_command = [stdscr, i]
+        elif i == "d":
+            switching_command = [stdscr, "d"]
 if __name__ == "__main__":
     curses.wrapper(main)

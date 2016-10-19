@@ -17,7 +17,7 @@ def _update_screen_(surface):
         _display_program_.terminate()
     except:
         pass
-    _display_program_ = subprocess.Popen(["fbi", "-a", "-T", "1",
+    _display_program_ = subprocess.Popen(["fbi", "-a", "-T", "1", "-noverbose",
                                           "/tmp/pama-face.png"])
 
 

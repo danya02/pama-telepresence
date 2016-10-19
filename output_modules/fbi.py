@@ -17,7 +17,8 @@ def _update_screen_(surface):
         _display_program_.terminate()
     except:
         pass
-    _display_program_ = subprocess.Popen(["fbi", "-a", "/tmp/pama-face.png"])
+    _display_program_ = subprocess.Popen(["fbi", "-a", "-T", "1",
+                                          "/tmp/pama-face.png"])
 
 
 def bitblt(null, screen, width, intrue, outtrue, outfalse):

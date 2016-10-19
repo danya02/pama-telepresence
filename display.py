@@ -40,7 +40,7 @@ def parse(script, dataset):
 
 
 def main(stdscr):
-    output.init_screen()
+    output.init_screen(stdscr)
     output.start_loop(stdscr)
     comms, screens = parse_cmd_line()
     commands = parse(comms.script.split(" "), screens)

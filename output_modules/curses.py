@@ -25,18 +25,18 @@ def bitblt(stdscr, screen, width, intrue, outtrue, outfalse):
 
 def __switcher__(stdscr):
     global __command__
-    global screens
+    global _screens_
     global __execute__
     while __execute__:
         if isinstance(__command__, list):
             if isinstance(__command__[1], list):
-                bitblt(__command__[0], __command__[1], screens["size"]["width"], 1, 1, 2)
+                bitblt(__command__[0], __command__[1], _screens_["size"]["width"], 1, 1, 2)
             elif __command__[1] == "d":
-                bitblt(stdscr, screens["delay"]["1"], screens["size"]["width"], 1, 1, 2)
+                bitblt(stdscr, _screens_["delay"]["1"], _screens_["size"]["width"], 1, 1, 2)
                 time.sleep(0.25)
-                bitblt(stdscr, screens["delay"]["2"], screens["size"]["width"], 1, 1, 2)
+                bitblt(stdscr, _screens_["delay"]["2"], _screens_["size"]["width"], 1, 1, 2)
                 time.sleep(0.25)
-                bitblt(stdscr, screens["delay"]["3"], screens["size"]["width"], 1, 1, 2)
+                bitblt(stdscr, _screens_["delay"]["3"], _screens_["size"]["width"], 1, 1, 2)
                 time.sleep(0.5)
         else:
             pass
@@ -48,7 +48,7 @@ def start_loop(stdscr):
     global __command__
     __command__ = None
     __execute__ = True
-    __thread__ = threading.Thread(target=__switcher__, args=(stdscr))
+    __thread__ = threading.Thread(target=__switcher__, args=(stdscr,))
     __thread__.setDaemon(True)
     __thread__.start()
 
@@ -58,10 +58,9 @@ def stop_loop():
     __execute__ = False
 
 
-def init_screen():
-    global _stdscr_
+def init_screen(stdscr):
     __init_color__()
-    _stdscr_.clear()
+    stdscr.clear()
 
 
 def update_command(obj):

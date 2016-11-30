@@ -14,7 +14,7 @@ def terminator():
     m.publish(TOPIC, payload='DOWN')
     m.disconnect()
     display.stop_loop()
-    raise SystemExt(0)
+    raise SystemExit(0)
 
 
 def on_message(client, userdata, message):

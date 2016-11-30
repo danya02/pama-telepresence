@@ -9,15 +9,26 @@ IP = '127.0.0.1'
 TOPIC = 'drones/drone1'
 
 
+def terminator():
+    global m
+    m.publish(TOPIC, payload='DOWN')
+    m.disconnect()
+    display.stop_loop()
+    raise SystemExt(0)
+
+
 def on_message(client, userdata, message):
     global scrstd
     message = message.payload
     try:                                                      # if bytes,
         display.update_command([scrstd, decodebin(message)])  # we display it;
-    except TypeError:                                         # if that fails,
-        display.update_command([scrstd, get(message)])        # we use the dict
-    except:
-        client.publish(TOPIC, "FAIL")
+    except TypeError:
+        try:                                                # if that fails,
+            display.update_command([scrstd, get(message)])  # we use the dict
+        except:
+            client.publish(TOPIC, "FAIL")
+        else:
+            client.publish(TOPIC, "ACK")
     else:
         client.publish(TOPIC, "ACK")
 
@@ -25,8 +36,10 @@ def on_message(client, userdata, message):
 def get(name):
     global screens
     name=str(name, "utf8")
-    if len(name) == 1:  # if it's a kernel hook,
-        return name     # it will be sent verbatim
+    if len(name) == 1:   # if it's a kernel hook,
+        if name == 'Q':  # (and not a termination command,
+            terminator() # in which case we shall invoke the Terminator),
+        return name      # it will be sent verbatim
     split = name.split("/")
     if len(split) == 1:                       # if it's an emotion name,
         return screens['emotions'][split[0]]  # it's in the emotions dict

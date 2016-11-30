@@ -2,6 +2,7 @@
 import output_modules.curses as display  # can change the output mode
 import json
 import signal
+import os
 import paho.mqtt.client as mqtt
 global sceens
 screens = json.load(open("screens.json"))
@@ -14,7 +15,7 @@ def terminator():
     m.publish(TOPIC, payload='DOWN')
     m.disconnect()
     display.stop_loop()
-    raise SystemExit(0)
+    os.abort()
 
 
 def on_message(client, userdata, message):

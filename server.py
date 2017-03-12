@@ -27,7 +27,8 @@ def on_message(client, userdata, message):
         try:                                                # if that fails,
             display.update_command([scrstd, get(message)])  # we use the dict
         except:
-            client.publish(TOPIC, "FAIL")
+            #client.publish(TOPIC, "FAIL")
+            pass
         else:
             client.publish(TOPIC, "ACK")
     else:
